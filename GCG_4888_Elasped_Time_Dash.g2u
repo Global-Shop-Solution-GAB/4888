@@ -1,0 +1,665 @@
+Program.Sub.ScreenSU.Start
+Gui.Form..Create
+Gui.Form..Caption("Work Order Elasped Time Dashboard")
+Gui.Form..Size(15360,11595)
+Gui.Form..MinX(0)
+Gui.Form..MinY(0)
+Gui.Form..Position(0,0)
+Gui.Form..BackColor(-2147483633)
+Gui.Form..MousePointer(0)
+Gui.Form..Event(UnLoad,Form_UnLoad)
+Gui.Form.lbl1.Create(Label,"Begining Date",True,1155,255,0,240,1200,True,0,"Arial",8,-2147483633,0)
+Gui.Form.dtpStart.Create(DatePicker)
+Gui.Form.dtpStart.Size(1425,285)
+Gui.Form.dtpStart.Position(240,1410)
+Gui.Form.lbl2.Create(Label,"Ending Date",True,1110,255,0,2085,1200,True,0,"Arial",8,-2147483633,0)
+Gui.Form.dtpEnd.Create(DatePicker)
+Gui.Form.dtpEnd.Size(1455,285)
+Gui.Form.dtpEnd.Position(2085,1410)
+Gui.Form.lbl3.Create(Label,"Work Order Dept",True,1395,255,0,3945,1200,True,0,"Arial",8,-2147483633,0)
+Gui.Form.txtDept.Create(TextBox,"",True,1215,300,0,3945,1410,True,0,"Arial",8,-2147483643,1)
+Gui.Form.txtDept.ControlGroup(1)
+Gui.Form.cmdDept.Create(Button)
+Gui.Form.cmdDept.Size(315,315)
+Gui.Form.cmdDept.Position(5235,1410)
+Gui.Form.cmdDept.Caption("^")
+Gui.Form.cmdDept.Event(Click,cmdDept_Click)
+Gui.Form.lbl4.Create(Label,"Work Center",True,1185,255,0,5925,1200,True,0,"Arial",8,-2147483633,0)
+Gui.Form.txtWC.Create(TextBox,"",True,1035,300,0,5940,1410,True,0,"Arial",8,-2147483643,1)
+Gui.Form.txtWC.ControlGroup(1)
+Gui.Form.cmdWC.Create(Button)
+Gui.Form.cmdWC.Size(315,315)
+Gui.Form.cmdWC.Position(7035,1410)
+Gui.Form.cmdWC.Caption("^")
+Gui.Form.cmdWC.Event(Click,cmdWC_Click)
+Gui.Form.lbl5.Create(Label,"Work Order No.",True,1335,255,0,7725,1200,True,0,"Arial",8,-2147483633,0)
+Gui.Form.txtJOb.Create(TextBox,"",True,1215,300,0,7725,1410,True,0,"Arial",8,-2147483643,1)
+Gui.Form.txtJOb.ControlGroup(1)
+Gui.Form.cmdJOb.Create(Button)
+Gui.Form.cmdJOb.Size(315,315)
+Gui.Form.cmdJOb.Position(9000,1410)
+Gui.Form.cmdJOb.Caption("^")
+Gui.Form.cmdJOb.Event(Click,cmdJOb_Click)
+Gui.Form.lbl6.Create(Label,"Product Line",True,1110,255,0,9690,1200,True,0,"Arial",8,-2147483633,0)
+Gui.Form.txtPL.Create(TextBox,"",True,1215,300,0,9690,1410,True,0,"Arial",8,-2147483643,1)
+Gui.Form.txtPL.ControlGroup(1)
+Gui.Form.cmdPL.Create(Button)
+Gui.Form.cmdPL.Size(315,315)
+Gui.Form.cmdPL.Position(10965,1410)
+Gui.Form.cmdPL.Caption("^")
+Gui.Form.cmdPL.Event(Click,cmdPL_Click)
+Gui.Form.cmdOK.Create(Button)
+Gui.Form.cmdOK.Size(855,375)
+Gui.Form.cmdOK.Position(12795,1410)
+Gui.Form.cmdOK.Caption("OK")
+Gui.Form.cmdOK.Event(Click,cmdOK_Click)
+Gui.Form.GsGCTime.Create(GsGridControl)
+Gui.Form.GsGCTime.Size(14820,8760)
+Gui.Form.GsGCTime.Position(105,2040)
+Gui.Form.picGSSLogo.Create(PictureBox)
+Gui.Form.picGSSLogo.Size(4125,960)
+Gui.Form.picGSSLogo.Position(5745,75)
+Gui.Form.cmdExport.Create(Button)
+Gui.Form.cmdExport.Size(855,375)
+Gui.Form.cmdExport.Position(14070,180)
+Gui.Form.cmdExport.Caption("Export")
+Gui.Form.cmdExport.Event(Click,cmdExport_Click)
+Gui.Form.progressBar1.Create(ProgressBar)
+Gui.Form.progressBar1.Size(5265,255)
+Gui.Form.progressBar1.Position(225,525)
+Gui.Form.lbl7.Create(Label,"Label",True,5235,255,0,225,240,True,0,"Arial",8,-2147483633,0)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+V.Local..BulkDeclareString(sIcon, sGSSLogo)
+F.Intrinsic.String.Build("{0}\GSS2.ico",V.Caller.GasDir,v.Local.sIcon)
+F.Intrinsic.String.Build("{0}\GAB_GSS_Logo_Green_Dash.png",V.Caller.GasDir,v.Local.sGssLogo)
+Gui.Form..Icon(v.Local.sIcon)
+Gui.Form.picGSSLogo.Picture(v.Local.sGssLogo)
+F.Intrinsic.Control.CallSub(Anchor)
+gui.Form.lbl7.Text("")
+gui.Form.progressBar1.Min(1)
+gui.Form.progressBar1.Max(24)
+Gui.Form.progressBar1.Visible(False)
+gui.Form.txtDept.DefaultValue("")
+gui.Form.txtJOb.DefaultValue("")
+gui.Form.txtPL.DefaultValue("")
+gui.Form.txtWC.DefaultValue("")
+F.ODBC.Connection!conx.OpenConnection(v.Ambient.PDSN, v.Ambient.PUser, v.Ambient.PPass, 2000)
+Gui.Form..Show
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.Main.End
+
+Program.Sub.Form_UnLoad.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+F.ODBC.Connection!conx.Close
+F.Intrinsic.Control.End
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndTry
+Program.Sub.Form_UnLoad.End
+
+Program.Sub.cmdOK_Click.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+F.Intrinsic.Control.CallSub(CloseTables)
+'Get the data
+F.Intrinsic.Control.BlockEvents
+gui.Form.lbl7.Text("")
+gui.Form.lbl7.Visible(True)
+F.Intrinsic.Control.CallSub(CurrentJobs)
+F.Intrinsic.Control.CallSub(HistoryJobs)
+F.Intrinsic.Control.CallSub(Filter)
+F.Intrinsic.Control.If(v.DataTable.dtTime.RowCount--, >, -1)
+	F.Intrinsic.Control.CallSub(Relation)
+	F.Intrinsic.Control.CallSub(GridProperty)
+F.Intrinsic.Control.EndIf
+gui.Form.lbl7.Visible(False)
+gui.Form.progressBar1.Visible(False)
+F.Intrinsic.Control.UnBlockEvents
+Gui.Form..ClearGroup(1)
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdOK_Click.End
+
+Program.Sub.cmdPL_Click.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+V.Local.sRet.Declare(String)
+F.Intrinsic.UI.SetBrowserHotTypeAhead(True)
+F.Intrinsic.UI.Browser(130, "", v.Local.sRet)
+F.Intrinsic.Control.If(v.Local.sRet, !=, "***CANCEL***")
+	F.Intrinsic.String.Split(v.Local.sRet, "*!*", v.Local.sRet)
+	Gui.Form.txtPL.Text(v.Local.sRet(0).Trim)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdPL_Click.End
+
+Program.Sub.cmdJOb_Click.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+V.Local.sRet.Declare(String)
+F.Intrinsic.UI.SetBrowserHotTypeAhead(True)
+F.Intrinsic.UI.Browser(1000, "", v.Local.sRet)
+F.Intrinsic.Control.If(v.Local.sRet, !=, "***CANCEL***")
+	F.Intrinsic.String.Split(v.Local.sRet, "*!*", v.Local.sRet)
+	F.Intrinsic.String.Build("{0}-{1}",v.Local.sRet(0), v.Local.sRet(1), v.Local.sRet(0))
+	Gui.Form.txtJOb.Text(v.Local.sRet(0).Trim)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdJOb_Click.End
+
+Program.Sub.cmdWC_Click.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+V.Local.sRet.Declare(String)
+F.Intrinsic.UI.SetBrowserHotTypeAhead(True)
+F.Intrinsic.UI.Browser(400, "", v.Local.sRet)
+F.Intrinsic.Control.If(v.Local.sRet, !=, "***CANCEL***")
+	F.Intrinsic.String.Split(v.Local.sRet, "*!*", v.Local.sRet)
+	Gui.Form.txtWC.Text(v.Local.sRet(0).Trim)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdWC_Click.End
+
+Program.Sub.cmdDept_Click.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+v.Local..BulkDeclareString(sRet, sSql, sTitles)
+v.Local.iWidths.Declare(Long)
+v.Local.sTitles.Set("Dept")
+v.Local.iWidths.Set(100)
+F.Intrinsic.UI.Browser("Departments", "conx","select Distinct WC_Dept From WorkCenters", v.Local.sTitles, v.Local.iWidths, v.Local.sRet)
+F.Intrinsic.Control.If(v.Local.sRet, !=, "***CANCEL***")
+	F.Intrinsic.String.Split(v.Local.sRet, "*!*", v.Local.sRet)
+	gui.Form.txtDept.Text(v.Local.sRet(0).trim)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdDept_Click.End
+
+Program.Sub.GridProperty.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+Gui.Form.progressBar1.Value(23)
+Gui.Form.GsGCTime.AddGridviewFromDatatable("gvTime", "dtData2")
+Gui.Form.GsGCTime.MainView("gvTime")
+Gui.Form.GsGCTime.SuspendLayout()
+Gui.Form.GsGCTime.SetGridViewProperty("gvTime","MultiSelect",True)
+Gui.Form.GsGCTime.SetGridViewProperty("gvTime","AllowSort",True)
+Gui.Form.GsGCTime.SetGridViewProperty("gvTime","AllowFilter",True)
+Gui.Form.GsGCTime.SetGridViewProperty("gvTime","Editable",False)
+Gui.Form.GsGCTime.SetGridViewProperty("gvTime","ReadOnly",True)
+Gui.Form.GsGCTime.SetGridViewProperty("gvTime","OptionsDetailShowDetailTabs",False)
+Gui.Form.GsGCTime.SetGridViewProperty("gvTime","OptionsViewShowGroupPanel",True)
+Gui.Form.GsGCTime.SetGridViewProperty("gvTime","EnableAppearanceOddRow",True)
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Date_Closed", "Caption", "Date Closed")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Job", "Caption", "Job")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Suffix", "Caption", "Suffix")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "PcsComp", "Caption", "Pieces Completed")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Hours", "Caption", "Value Added Time")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Non_Value_Added_Time", "Caption", "Non Value Added Time")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Total_Time", "Caption", "Total Time")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Start", "visible", False)
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "PcsComp", "DisplayCustomString", "###,###,##0.00")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Hours", "DisplayCustomString", "###,###,##0.00")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Non_Value_Added_Time", "DisplayCustomString", "###,###,##0.00")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Job", "MinWidth", "50")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Suffix", "MinWidth", "30")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Part", "MinWidth", "105")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "PL", "MinWidth", "20")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "PcsComp", "MinWidth", "55")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Date_Closed", "MinWidth", "70")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Total_Time", "MinWidth", "55")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Hours", "MinWidth", "55")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Non_Value_Added_Time", "MinWidth", "55")
+Gui.Form.GsGCTime.SetColumnProperty("gvTime", "Date_Closed", "DisplayCustomDateTime","d")
+Gui.Form.progressBar1.Value(24)
+gui.Form.progressBar1.Visible(False)
+Gui.Form.GsGCTime.ResumeLayout()
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.GridProperty.End
+
+Program.Sub.CurrentJobs.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+v.Local.sSql.Declare(String, "")
+v.Local.sColumns.Declare(String, "")
+v.Local.sJob.Declare
+V.Local..BulkDeclareDate(dStart,dEnd)
+Gui.Form.progressBar1.Visible(True)
+Gui.Form.progressBar1.Value(1)
+Gui.Form.lbl7.Text("Checking for Current Jobs....")
+v.Local.dStart.Set(v.Screen.Form!dtpStart.Value)
+v.Local.dEnd.Set(v.Screen.Form!dtpEnd.Value)
+'Create the Table with the information.  
+'F.Intrinsic.Debug.BenchmarkModeEnable
+'create table with Job detail info
+'Create table with Job Header Info
+F.Intrinsic.String.Build("Select JH.Part, JH.Job, JH.Suffix, JH.Date_Closed, JH.Qty_completed as PcsComp, JH.Product_Line as PL From V_Job_Header JH Where Job+Suffix IN (SELECT DISTINCT Job+Suffix FROM V_Job_Detail JD WHERE JH.Job = JD.Job AND JH.Suffix = JD.Suffix AND JD.LMO = 'L') AND JH.Date_Closed BETWEEN '{0}' and '{1}'", v.Local.dStart.PervasiveDate, v.Local.dEnd.PervasiveDate, v.Local.sSql)
+F.Intrinsic.Control.If(v.Screen.Form!txtPL.Text, !=, "")
+	F.Intrinsic.String.Build("{0} and Product_Line = '{1}'", v.Local.sSql, v.Screen.Form!txtPL.Text, v.Local.sSql)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.Screen.Form!txtJOb.Text, != , "")
+	F.Intrinsic.String.Split(v.Screen.Form!txtJOb.Text, "-", v.Local.sJob)
+	v.Local.sJob.RedimPreserve(0,1)
+	F.Intrinsic.String.Build("{0} and Job = '{1}' and Suffix = '{2}'", v.Local.sSql, v.Local.sJob(0).trim, v.Local.sJob(1).trim, v.Local.sSql)
+F.Intrinsic.Control.EndIf
+
+F.Data.DataTable.CreateFromSQL("dtHeader", "conx", v.Local.sSql, true)
+Gui.Form.progressBar1.Value(2)
+
+v.Local.sSql.Set("Select rtrim(A.Dept_WorkCenter) as Dept_Workcenter, A.Machine, A.Job, A.Suffix,A.Job+A.Suffix as WO,A.Job+A.Suffix+A.Machine as WOMach from Job_detail A Where A.LMO = 'L' ")
+F.Intrinsic.Control.If(v.Screen.Form!txtDept.Text, !=, "")
+	F.Intrinsic.String.Build("{0} and Dept_WorkCenter = '{1}'", v.Local.sSql, v.Screen.Form!txtDept.text, v.Local.sSql)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.Screen.Form!txtWC.text, !=, "")
+	F.Intrinsic.String.Build("{0} and Machine = '{1}'", v.Local.sSql, v.Screen.Form!txtWC.Text, v.Local.sSql)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.String.Build("{0} Group by A.Job, A.Suffix, A.Machine, A.Dept_Workcenter", v.Local.sSql, v.Local.sSql)
+F.Data.DataTable.CreateFromSQL("dtDetail", "conx", v.Local.sSql, true)
+Gui.Form.progressBar1.Value(3)
+v.Local.sColumns.Set("A.Dept_Workcenter*!*A.Machine*!*B.Job*!*B.Suffix*!*A.WO*!*A.WOMach*!*B.Date_Closed*!*B.PcsComp*!*B.PL*!*B.Part")
+F.Data.Linq.Join("RightJoin", "Datatable", "dtDetail*!*A", "Datatable", "dtHeader*!*B", "A.Job=B.Job and A.Suffix=B.Suffix", v.Local.sColumns, "", "", "", "dtTime", TRUE)
+Gui.Form.progressBar1.Value(4)
+F.Data.DataTable.AddColumn("dtTime", "Start", "Date")
+F.Data.DataTable.AddColumn("dtTime", "Hours", "String")
+F.Intrinsic.Control.If(v.DataTable.dtHeader.RowCount--, =, -1)
+'	F.Data.DataTable.Close("dtHeader")
+	F.Data.DataTable.AddColumn("dtTime", "Dept_Workcenter", "String")
+	F.Data.DataTable.AddColumn("dtTime", "Machine", "String")
+	F.Data.DataTable.AddColumn("dtTime", "Job", "String")
+	F.Data.DataTable.AddColumn("dtTime", "Suffix", "String")
+	F.Data.DataTable.AddColumn("dtTime", "WO", "String")
+	F.Data.DataTable.AddColumn("dtTime", "WOMach", "String")
+	F.Data.DataTable.AddColumn("dtTime", "Date_Closed", "Date")
+	F.Data.DataTable.AddColumn("dtTime", "PcsComp", "Float")
+	F.Data.DataTable.AddColumn("dtTime", "PL", "String")
+	F.Data.DataTable.AddColumn("dtTime", "Part", "String")
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+Gui.Form.progressBar1.Value(5)
+v.Local.sSql.Set("select Job+Suffix+Machine as WOMach, Cast(sum(Hours_Worked) as Numeric (18,2)) as ActHours  from JOB_DETAIL Where LMO = 'L' Group by Job, Suffix, Machine")
+F.Data.Dictionary.CreateFromSQL("Hours", "conx", v.Local.sSql)
+F.Data.Dictionary.SetDefaultReturn("Hours", "0.00")
+
+F.Data.DataTable.FillFromDictionary("dtTime", "Hours", "WOMach","Hours" )
+F.Data.Dictionary.Close("Hours")
+Gui.Form.progressBar1.Value(6)
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.CurrentJobs.End
+
+Program.Sub.HistoryJobs.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+v.Local.sSql.Declare(String, "")
+v.Local.sColumns.Declare(String, "")
+v.Local.sFilter.Declare(String, "")
+v.Local.sJob.Declare
+V.Local..BulkDeclareDate(dStart,dEnd)
+Gui.Form.lbl7.Text("Checking for History Jobs....")
+v.Local.dStart.Set(v.Screen.Form!dtpStart.Value)
+v.Local.dEnd.Set(v.Screen.Form!dtpEnd.Value)
+'Create the Table with the information.  
+F.Intrinsic.String.Build("Select JHM.Part, JHM.Job, JHM.Suffix, JHM.Date_Closed, JHM.Qty_completed as PcsComp, JHM.Product_Line as PL From V_Job_Hist_Mast JHM Where Job+Suffix IN (SELECT DISTINCT Job+Suffix FROM V_Job_Hist_DTL JHD WHERE JHM.Job = JHD.Job AND JHM.Suffix = JHD.Suffix AND JHD.LMO = 'L') AND JHM.Date_Closed Between '{0}' and '{1}'", v.Local.dStart.PervasiveDate, v.Local.dEnd.PervasiveDate, v.Local.sSql)
+F.Intrinsic.Control.If(v.Screen.Form!txtPL.Text, !=, "")
+	F.Intrinsic.String.Build("{0} and Product_Line = '{1}'", v.Local.sSql, v.Screen.Form!txtPL.Text, v.Local.sSql)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.Screen.Form!txtJOb.Text, != , "")
+	F.Intrinsic.String.Split(v.Screen.Form!txtJOb.Text, "-", v.Local.sJob)
+	v.Local.sJob.RedimPreserve(0,1)
+	F.Intrinsic.String.Build("{0} and Job = '{1}' and Suffix = '{2}'", v.Local.sSql, v.Local.sJob(0).trim, v.Local.sJob(1).trim, v.Local.sSql)
+F.Intrinsic.Control.EndIf
+F.Data.DataTable.CreateFromSQL("dtHeader2", "conx", v.Local.sSql, true)
+F.Intrinsic.Control.If(v.DataTable.dtHeader2.RowCount--, =, -1)
+	F.Data.DataTable.Close("dtHeader2")
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+Gui.Form.progressBar1.Value(7)
+v.Local.sSql.Set("Select rtrim(A.Department) as Dept_Workcenter, A.Machine, A.Job, A.Suffix,A.Job+A.Suffix as WO,A.Job+A.Suffix+A.Machine as WOMach from Job_Hist_dtl A Where A.LMO = 'L' ")
+F.Intrinsic.Control.If(v.Screen.Form!txtDept.Text, !=, "")
+	F.Intrinsic.String.Build("{0} and Department = '{1}'", v.Local.sSql, v.Screen.Form!txtDept.text, v.Local.sSql)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.Screen.Form!txtWC.text, !=, "")
+	F.Intrinsic.String.Build("{0} and Machine = '{1}'", v.Local.sSql, v.Screen.Form!txtWC.Text, v.Local.sSql)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.String.Build("{0} Group by A.Job, A.Suffix, A.Machine, A.Department", v.Local.sSql, v.Local.sSql)
+F.Data.DataTable.CreateFromSQL("dtDetail2", "conx", v.Local.sSql, true)
+'Create table with Job Header Info
+Gui.Form.progressBar1.Value(8)
+v.Local.sColumns.Set("A.Dept_Workcenter*!*A.Machine*!*A.Job*!*A.Suffix*!*A.WO*!*A.WOMach*!*B.Date_Closed*!*B.PcsComp*!*B.PL*!*B.Part")
+F.Data.Linq.Join("RightJoin", "Datatable", "dtDetail2*!*A", "Datatable", "dtHeader2*!*B", "A.Job=B.Job and A.Suffix=B.Suffix", v.Local.sColumns, "", "", "", "dtTimeHist", TRUE)
+Gui.Form.progressBar1.Value(9)
+Gui.Form.progressBar1.Value(10)
+v.Local.sSql.Set("select Job+Suffix+Machine as WOMach, Cast(sum(Hours_Worked) as Numeric(18,2)) as ActHours  from JOB_Hist_DTL Where LMO = 'L' Group by Job, Suffix, Machine")
+F.Data.Dictionary.CreateFromSQL("Hours", "conx", v.Local.sSql)
+F.Data.Dictionary.SetDefaultReturn("Hours", "0.00")
+F.Data.DataTable.AddColumn("dtTimeHist", "Hours", "String")
+F.Data.DataTable.FillFromDictionary("dtTimeHist", "Hours", "WOMach","Hours" )
+F.Data.Dictionary.Close("Hours")
+Gui.Form.progressBar1.Value(11)
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.HistoryJobs.End
+
+Program.Sub.Filter.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+v.Local.sFilter.Declare(String, "")
+v.Local.sJob.Declare(String,"")
+'Merge the Data
+Gui.Form.lbl7.Text("Filtering Jobs....")
+F.Intrinsic.Control.If(v.DataTable.dtTimeHist.Exists)
+	F.Data.DataTable.Merge("dtTimeHist", "dtTime",False, 2)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.DataTable.dtTime.RowCount--, =, -1)
+	F.Intrinsic.UI.Msgbox("No records found based on the parameters selected!", "No Records")
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+F.Intrinsic.String.Build("Date_Closed >= '{0}' AND Date_Closed <= '{1}'", v.Screen.Form!dtpStart.Value, v.Screen.Form!dtpEnd.Value, v.Local.sFilter)
+F.Intrinsic.Control.If(v.Screen.Form!txtDept.text, !=, "")
+	F.Intrinsic.String.Build("{0} AND [Dept_WorkCenter] = '{1}'", v.Local.sFilter, v.Screen.Form!txtDept.Text, v.Local.sFilter)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.Screen.Form!txtWC.Text, !=, "")
+	F.Intrinsic.String.Build("{0} And Machine = '{1}'", v.Local.sFilter, v.Screen.Form!txtWC.Text, v.Local.sFilter)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.Screen.Form!txtJOb.Text , !=, "")
+	F.Intrinsic.String.Split(v.Screen.Form!txtJOb.Text, "-", v.Local.sJob)
+	F.Intrinsic.String.Build("{0} AND Job = '{1}' AND Suffix = '{2}'", v.Local.sFilter, v.Local.sJob(0), v.Local.sJob(1), v.Local.sFilter)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.Screen.Form!txtPL.text, !=, "")
+	F.Intrinsic.String.Build("{0} And PL = '{1}'", v.Local.sFilter, v.Screen.Form!txtPL.text, v.Local.sfilter)
+F.Intrinsic.Control.EndIf
+Gui.Form.progressBar1.Value(12)
+F.Data.DataView.Create("dtTime","dvTime", 22,v.Local.sFilter,"")
+Gui.Form.progressBar1.Value(13)
+F.Data.Dataview.ToDataTable("dtTime", "dvTime", "dtChild",True)
+Gui.Form.progressBar1.Value(14)
+F.Data.DataTable.Close("dtDetail")
+F.Data.DataTable.Close("dtHeader")
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.Filter.End
+
+Program.Sub.Relation.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+v.Local.sSql.Declare(String)
+Gui.Form.lbl7.Text("Setting Data Relationship....")
+F.Data.DataView.ToDataTableDistinct("dtTime", "dvTime", "dtData","Date_Closed*!*Job*!*Suffix*!*Part*!*PL*!*PcsComp*!*WO*!*Start", True)
+Gui.Form.progressBar1.Value(15)
+F.Data.DataTable.CreateFromSQL("dtData2", "conx", "select Job, Suffix, ' ' as Part, ' ' as PL, ' ' as PcsComp, Job+Suffix as WO from Job_detail Where Job = ''", True)
+F.Data.DataTable.AddColumn("dtData2", "Start", "Date")
+F.Data.DataTable.AddColumn("dtData2", "Date_Closed", "Date")
+Gui.Form.progressBar1.Value(16)
+F.Data.DataTable.Merge("dtData", "dtData2", False, 2)
+F.Intrinsic.Control.CallSub(WorkdaysBetweenDates)
+Gui.Form.progressBar1.Value(17)
+v.Local.sSql.Set("select JOb+Suffix as WO, sum(Hours_Worked) as ActHours from JOB_DETAIL Where LMO = 'L' Group by Job, Suffix Union Select JOb+Suffix as WO, Cast(sum(Hours_Worked) as Numeric(18,4)) as ActHours from JOB_Hist_DTL Where LMO = 'L' Group by Job, Suffix")
+F.Data.Dictionary.CreateFromSQl("Hours", "conx", v.Local.sSql)
+F.Data.DataTable.AddColumn("dtData2", "Hours", "Float")
+F.Data.DataTable.FillFromDictionary("dtData2", "Hours", "WO", "Hours")
+F.Data.Dictionary.Close("Hours")
+Gui.Form.progressBar1.Value(18)
+F.Data.DataTable.AddExpressionColumn("dtData2", "Non_Value_Added_Time", "Float", "[Total_Time] - [Hours]")
+Gui.Form.progressBar1.Value(19)
+F.Data.DataTable.CreateFromSQL("dtData2$dtTime2", "conx", "Select Job as Job, Suffix as Suffix, Machine as Machine, Cast(0.00 as Numeric(18,2)) as Hours from Job_detail Where Job = ''",True)
+Gui.Form.progressBar1.Value(20)
+F.Data.DataTable.Merge("dtChild", "dtData2$dtTime2", False, 2)
+Gui.Form.progressBar1.Value(21)
+F.Data.DataTable.AddRelation("dtData2", "Job*!*Suffix","dtData2$dtTime2", "Job*!*Suffix", "JobInfo")
+Gui.Form.progressBar1.Value(22)
+F.Data.DataTable.RemoveColumn("dtData2", "WO")
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.Relation.End
+
+Program.Sub.WorkdaysBetweenDates.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+v.Local.sSql.Declare
+v.Local.sStart.Declare
+v.Local.sEnd.Declare
+v.Local.sRet.Declare
+v.Local.fTime.Declare
+v.Local..BulkDeclareLong(iCount, iRet, iTime)
+Gui.Form.lbl7.Text("Calculating Total Time....")
+F.Data.DataTable.AddColumn("dtData2", "Total_Time", "float")
+F.Intrinsic.Control.For(v.Local.iCount, 0, v.DataTable.dtData2.RowCount--, 1)
+
+	F.Intrinsic.String.Build("Select top 1 Charge_Date, Start_Time from v_Job_Detail where Job = '{0}' and Suffix = '{1}' and LMO = 'L' order by Charge_Date asc, Start_Time asc",v.DataTable.dtData2(v.Local.iCount).Job!fieldvaltrim, v.DataTable.dtData2(v.Local.iCount).Suffix!fieldvaltrim, v.Local.sSql)
+	F.ODBC.Connection!conx.openlocalRecordsetRO("rstStart", v.Local.sSql)
+	
+	F.Intrinsic.Control.If(v.ODBC.conx!rstStart.EOF, =, False)
+		f.Data.DataTable.SetValue("dtData2", v.Local.iCount, "Start", v.ODBC.conx!rstStart.FieldValPervasiveDate!Charge_Date)
+		v.Local.sStart.Set(v.ODBC.conx!rstStart.FieldValTrim!Start_Time)
+		
+	F.Intrinsic.Control.Else
+		F.Intrinsic.String.Build("Select top 1 Charge_Date, Start_Time from v_Job_Hist_DTL where Job = '{0}' and Suffix = '{1}' and LMO = 'L' order by Charge_Date asc, Start_Time asc",v.DataTable.dtData2(v.Local.iCount).Job!fieldvaltrim, v.DataTable.dtData2(v.Local.iCount).Suffix!fieldvaltrim, v.Local.sSql)
+		F.ODBC.Connection!conx.openlocalRecordsetRO("rstStartHist", v.Local.sSql)
+		
+		F.Intrinsic.Control.If(v.ODBC.conx!rstStartHist.EOF, =, False)
+			f.Data.DataTable.SetValue("dtData2", v.Local.iCount, "Start", v.ODBC.conx!rstStartHist.FieldValPervasiveDate!Charge_Date)
+			v.Local.sStart.Set(v.ODBC.conx!rstStartHist.FieldValTrim!Start_Time)
+			
+		F.Intrinsic.Control.EndIf
+		F.ODBC.conx!rstStartHist.Close
+		
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rstStart.Close
+	
+	'get the end time and date
+	F.Intrinsic.String.Build("Select top 1 Charge_Date, End_Time from v_Job_Detail where Job = '{0}' and Suffix = '{1}' and LMO = 'L' order by Charge_Date desc, End_Time desc",v.DataTable.dtData2(v.Local.iCount).Job!fieldvaltrim, v.DataTable.dtData2(v.Local.iCount).Suffix!fieldvaltrim, v.Local.sSql)
+		F.ODBC.Connection!conx.openlocalRecordsetRO("rstEnd", v.Local.sSql)
+	F.Intrinsic.Control.If(v.ODBC.conx!rstEnd.EOF, =, False)
+		f.Data.DataTable.SetValue("dtData2", v.Local.iCount, "Date_Closed", v.ODBC.conx!rstEnd.FieldValPervasiveDate!Charge_Date)
+		v.Local.sEnd.Set(v.ODBC.conx!rstEnd.FieldValTrim!End_Time)
+	F.Intrinsic.Control.Else
+		F.Intrinsic.String.Build("Select top 1 Charge_Date, End_Time from v_Job_Hist_DTL where Job = '{0}' and Suffix = '{1}' and LMO = 'L' order by Charge_Date desc, End_Time desc",v.DataTable.dtData2(v.Local.iCount).Job!fieldvaltrim, v.DataTable.dtData2(v.Local.iCount).Suffix!fieldvaltrim, v.Local.sSql)
+		F.ODBC.Connection!conx.openlocalRecordsetRO("rstEndHist", v.Local.sSql)
+		F.Intrinsic.Control.If(v.ODBC.conx!rstEndHist.EOF, =, False)
+			f.Data.DataTable.SetValue("dtData2", v.Local.iCount, "Date_Closed", v.ODBC.conx!rstEndHist.FieldValPervasiveDate!Charge_Date)
+			v.Local.sEnd.Set(v.ODBC.conx!rstEndHIst.FieldValTrim!End_Time)
+		F.Intrinsic.Control.EndIf
+		F.ODBC.conx!rstEndHist.Close
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rstEnd.Close
+	F.Intrinsic.Math.Sub(2400, v.Local.sStart.Long, v.Local.sStart)
+	F.Intrinsic.String.LPad(v.Local.sStart, "0", 4, v.Local.sStart)
+	F.Intrinsic.String.Right(v.Local.sStart, 2, v.Local.sRet)
+	F.Intrinsic.Math.Div(v.Local.sRet.long, 60, v.Local.fTime)
+	F.Intrinsic.String.Left(v.Local.sStart, 2, v.Local.sRet)
+	F.Intrinsic.Math.Add(v.Local.sRet.Long, v.Local.fTime, v.Local.sStart)
+	
+	F.Intrinsic.Date.WorkdaysBetweenDates(v.DataTable.dtData2(v.Local.iCount).Start!FieldValPervasiveDate, v.DataTable.dtData2(v.Local.iCount).Date_Closed!FieldValPervasiveDate,92, v.Local.iRet)
+	F.Intrinsic.Math.Sub(v.Local.iRet, 1, v.Local.iRet)
+	F.Intrinsic.Math.Mult(v.Local.iRet, 24, v.Local.iRet)
+
+	F.Intrinsic.Control.If(v.DataTable.dtData2(v.Local.iCount).Start!FieldValPervasiveDate, !=, v.DataTable.dtData2(v.Local.iCount).Date_Closed!FieldValPervasiveDate)
+		F.Intrinsic.String.LPad(v.Local.sEnd, "0", 4, v.Local.sEnd)
+		F.Intrinsic.String.Right(v.Local.sEnd, 2, v.Local.sRet)
+		F.Intrinsic.Math.Div(v.Local.sRet.long, 60, v.Local.fTime)
+		F.Intrinsic.String.Left(v.Local.sEnd, 2, v.Local.sRet)
+		F.Intrinsic.Math.Add(v.Local.sRet.Long, v.Local.fTime, v.Local.sEnd)
+		F.Intrinsic.Math.Add(v.Local.sEnd.Float, v.Local.sStart.Float, v.Local.fTime)
+		F.Intrinsic.Math.Add(v.Local.iRet.Long, v.Local.fTime, v.Local.fTime)
+	F.Intrinsic.Control.Else
+		F.Intrinsic.Math.Sub(2400, v.Local.sEnd.Long, v.Local.sEnd)
+		F.Intrinsic.String.LPad(v.Local.sEnd, "0", 4, v.Local.sEnd)
+		F.Intrinsic.String.Right(v.Local.sEnd, 2, v.Local.sRet)
+		F.Intrinsic.Math.Div(v.Local.sRet.long, 60, v.Local.fTime)
+		F.Intrinsic.String.Left(v.Local.sEnd, 2, v.Local.sRet)
+		F.Intrinsic.Math.Add(v.Local.sRet.Long, v.Local.fTime, v.Local.sEnd)
+		f.Intrinsic.Math.Sub(v.Local.sStart.Float, v.Local.sEnd.Float, v.Local.fTime)
+	F.Intrinsic.Control.EndIf
+		
+	'convert to decimal time
+	
+	
+	
+	F.Intrinsic.Math.Round(v.Local.fTime, 2, v.Local.fTime)
+	'set the Value in the column
+	F.Data.DataTable.SetValue("dtData2", v.Local.iCount, "Total_Time", v.Local.fTime)
+F.Intrinsic.Control.Next(v.Local.iCount)
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.WorkdaysBetweenDates.End
+
+Program.Sub.cmdExport_Click.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+
+V.Local.sFileExport.Declare
+V.Local.bExcel.Declare
+V.Local.bFileLocked.Declare
+V.Local.sMsg.Declare
+V.Local.iRet.Declare
+F.Automation.MSExcel.CheckPresence(V.Local.bExcel)
+F.Intrinsic.Control.If(V.Local.bExcel)
+	F.Intrinsic.String.Build("{0}\GCG_4888_Elasped_Time.xlsx",V.Caller.LocalGssTempDir,V.Local.sFileExport)
+	F.Intrinsic.File.IsFileLocked(V.Local.sFileExport,V.Local.bFileLocked)
+	F.Intrinsic.Control.If(V.Local.bFileLocked)
+		F.Intrinsic.String.Build("File is already open. Please close and export again.{0}File: {1}",V.Ambient.NewLine,V.Local.sFileExport,V.Local.sMsg)
+		F.Intrinsic.UI.Msgbox(V.Local.sMsg,"File In Use")
+	F.Intrinsic.Control.Else
+		Gui.Form.GsGCTime.Export(V.Local.sFileExport,"xlsx")
+		F.Intrinsic.Task.ShellExec(0,"",V.Local.sFileExport,"","",1)
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Else
+	F.Intrinsic.String.Build("{0}\GCG_4888_Elasped_Time.csv",V.Caller.LocalGssTempDir,V.Local.sFileExport)
+	F.Intrinsic.File.IsFileLocked(V.Local.sFileExport,V.Local.bFileLocked)
+	F.Intrinsic.Control.If(V.Local.bFileLocked)
+		F.Intrinsic.String.Build("File is already open. Please close and export again.{0}File: {1}",V.Ambient.NewLine,V.Local.sFileExport,V.Local.sMsg)
+		F.Intrinsic.UI.Msgbox(V.Local.sMsg,"File In Use")
+	F.Intrinsic.Control.Else
+		Gui.Form.GsGCTime.Export(V.Local.sFileExport,"csv")
+	F.Intrinsic.Control.EndIf
+	F.Intrinsic.Task.ShellExec(0,"",V.Local.sFileExport,"","",1)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End 
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdExport_Click.End
+
+Program.Sub.Anchor.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+Gui.Form.picGSSLogo.Anchor(1)
+gui.Form.cmdExport.Anchor(9)
+Gui.Form.cmdDept.Anchor(5)
+Gui.Form.cmdJOb.Anchor(5)
+Gui.Form.cmdOK.Anchor(5)
+Gui.Form.cmdPL.Anchor(5)
+Gui.Form.cmdWC.Anchor(5)
+Gui.Form.dtpEnd.Anchor(5)
+Gui.Form.dtpStart.Anchor(5)
+gui.Form.lbl7.anchor(5)
+Gui.Form.progressBar1.Anchor(5)
+Gui.Form.GsGCTime.Anchor(15)
+gui.Form.lbl1.Anchor(5)
+Gui.Form.lbl2.Anchor(5)
+Gui.Form.lbl3.Anchor(5)
+Gui.Form.lbl4.Anchor(5)
+Gui.Form.lbl5.Anchor(5)
+Gui.Form.lbl6.Anchor(5)
+gui.Form.txtDept.Anchor(5)
+Gui.Form.txtJOb.Anchor(5)
+Gui.Form.txtPL.Anchor(5)
+Gui.Form.txtWC.Anchor(5)
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.Anchor.End
+
+Program.Sub.CloseTables.Start
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+F.Intrinsic.Control.If(v.DataTable.dtTime.Exists)
+	F.Data.DataTable.Close("dtTime")
+'	F.Data.DataView.Close("dtTime", "dvTime")		
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.DataTable.dtHeader.Exists)
+	F.Data.DataTable.Close("dtHeader")
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.DataTable.dtDetail.Exists)
+	F.Data.DataTable.Close("dtDetail")
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.DataTable.dtData2.Exists)
+	F.Data.DataTable.Close("dtData2")
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.DataTable.dtChild.Exists)
+	F.Data.DataTable.Close("dtChild")
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.DataTable.dtHeader2.Exists)
+	F.Data.DataTable.Close("dtHeader2")
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.DataTable.dtDetail2.Exists)
+	F.Data.DataTable.Close("dtDetail2")
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.DataTable.dtData.Exists)
+	F.Data.DataTable.Close("dtData")
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(v.DataTable.dtTimeHist.Exists)
+	F.Data.DataTable.Close("dtTimeHist")
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form_Unload)
+F.Intrinsic.Control.EndTry
+Program.Sub.CloseTables.End
